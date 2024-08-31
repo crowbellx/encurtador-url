@@ -19,9 +19,15 @@ public class UrlController {
 
     @PostMapping("/shorten")
     public ResponseEntity<Url> shortenUrl(@RequestParam(defaultValue = "http://example.com") String originalUrl) {
-        System.out.println(originalUrl);
-        Url url = urlService.shortenUrl(originalUrl);
-        return ResponseEntity.ok(url);
+        Url url = new Url();
+
+        if (urlService.findByOriginalUrl(originalUrl).isPresent()){
+             url = urlService.findByOriginalUrl(originalUrl).get();
+             return ResponseEntity.ok(url);
+        }else{
+            url = urlService.shortenUrl(originalUrl);
+            return ResponseEntity.ok(url);
+        }
     }
 
     @GetMapping("/{shortUrl}")
